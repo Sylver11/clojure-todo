@@ -1,0 +1,41 @@
+#mdb-preloader.loaded {
+  opacity: 0;
+  transition: .3s ease-in 1s;
+}
+
+.loader {
+    margin-top: 30px;
+  margin-left: 30px;
+}
+
+
+.pre-content {
+    opacity: 0;
+}
+
+#post-content.loaded {
+opacity: 1;
+  transition: .3s ease-in 1s;
+}
+
+.portfolio-page {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.spellgeek {
+    /* background-color: transparent; */
+    width: 300px;
+    height: 220px;
+}
+
+.portfolio .portfolio-item {
+  cursor: pointer;
+  position: relative;
+  display: block;
+  max-width: 25rem;
+  margin-bottom: 30px;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
