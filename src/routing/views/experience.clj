@@ -9,7 +9,8 @@
  )
 
 
-
+;;I am following the official documentation from here https://clojure.org/guides/destructuring
+;; but cannot get it to work. I am using the first order nested associative destructuring methode with let
 
 (defn display-result [req]
   (println "Request map:" req)
