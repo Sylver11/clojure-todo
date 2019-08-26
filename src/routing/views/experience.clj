@@ -11,12 +11,6 @@
 
 
 
-;; (defn experience-page []
-;;   (html
-;;    [:form {:method "get" :action "get-submit"}
-;;        [:input {:type "text" :name "name"}]
-;;        [:input {:type "submit" :value "submit"}]]))
-
 (defn display-result [req]
   (println "Request map:" req)
    (let [{{firstname :firstname secondname :secondname} :params} req]
@@ -25,10 +19,8 @@
      [:h1 "Hello " (h firstname secondname) "!"]
      ])))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;
-;;this to be ingored
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
 
 (defn experience-page []
   (html
