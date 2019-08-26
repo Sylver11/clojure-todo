@@ -20,7 +20,7 @@
  (GET "/experience" [] (layout/application "My experience" (experience/experience-page)))
   (GET "/about" [] (layout/application "Just about me" (about/about-page)))
   (GET "/portfolio" [] (layout/application "My projects" (portfolio/portfolio-page)))
- (GET "/get-submit" [req] (layout/application "Your input" (experience/display-result req)))
+ (GET "/get-submit" req (layout/application "Your input" (experience/display-result req)))
   (route/not-found "Not Found"))
 
 (def app
