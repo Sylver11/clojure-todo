@@ -1,0 +1,28 @@
+Todo app
+
+parts to it:
+1. login page
+- user must be able to register
+- user must receive an email confirming her/her registration
+- user must be able to reset their password vie email
+- user should be able to logout
+
+2. todo list
+- user can add, delet and edit entry
+-- the editing part must include changing of date
+- when adding entry it should add a timestamp
+- also when adding user is asked for defining a due date
+- until one day before due date entry should be green
+- on due date entry should change to yellow
+- when due date is reached it should change background color to red
+
+
+3. user profile
+- user should be able to set a profile picture
+- user should be able to deregister
+
+
+
+markup todo app:
+1. login page
+-

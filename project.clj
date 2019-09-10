@@ -9,9 +9,8 @@
                  [reagent "0.8.1"]
                  [hiccup "1.0.0"]
                  [ring/ring-defaults "0.3.2"]
-                 [com.datomic/datomic-pro "0.9.5930"
-               ;;   :exclusions [com.google.guava/guava]
-                  ]]
+                 [metis "0.3.3"]
+                 [com.datomic/datomic-pro "0.9.5930"]]
   :plugins [[lein-ring "0.12.5"]]
   :ring {:handler routing.handler/app}
   :profiles
