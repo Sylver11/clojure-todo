@@ -8,7 +8,8 @@
             [routing.views.index :as index]
             [routing.views.portfolio :as portfolio]
             [routing.views.experience :as experience]
-            [routing.views.registration :as reg]
+            [routing.views.success :as success]
+            [routing.database-writes :as database-writes]
             [routing.views.error :as error]
             )
   )
@@ -18,7 +19,9 @@
   (GET "/experience" [] (layout/application "My experience" (experience/experience-page)))
   (GET "/about" [] (layout/application "Just about me" (about/about-page)))
   (GET "/portfolio" [] (layout/application "My projects" (portfolio/portfolio-page)))
-  (POST "/get-submit" req (layout/application "Your input" (reg/user-validation req)))
+ ; (POST "/get-submit" req (database-writes/capture-user-registration))
+  (POST "/get-submit" req (layout/application "Your input" (database-writes/capture-user-registration req)))
+  (GET "/success" data (layout/application "Your input" (success/display-success-registration)))
   (route/not-found "Not Found"))
 
 (def app
