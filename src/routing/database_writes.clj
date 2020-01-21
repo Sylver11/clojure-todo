@@ -1,20 +1,24 @@
 (ns routing.database-writes
-  (:require [datomic.api :as d]
+  (:require [clojure.string :as string]
+            [datomic.api :as d]
             [routing.views.success :as success]))
 
 (def db-uri "datomic:dev://localhost:4334/todo")
 
 (def add-entity-schema
-  [{:db/ident       :client/firstName
+  [{:db/ident       :client/first-name
     :db/index       true
     :db/valueType   :db.type/string
     :db/cardinality :db.cardinality/one}
-   {:db/ident       :client/lastName
+   {:db/ident       :client/last-name
     :db/index       true
     :db/valueType   :db.type/string
     :db/cardinality :db.cardinality/one}
    {:db/ident       :client/email
     :db/unique      :db.unique/identity
+    :db/valueType   :db.type/string
+    :db/cardinality :db.cardinality/one}
+   {:db/ident       :client/password
     :db/valueType   :db.type/string
     :db/cardinality :db.cardinality/one}])
 
@@ -22,47 +26,48 @@
 (def db (comp d/db conn))
 
 (defn setup-database! []
+  ;(d/delete-database db-uri)
   (d/create-database db-uri)
   (d/transact (conn) add-entity-schema))
-
-(defn -main [& args]
-  (setup-database!))
-
-(defn write-user-data [firstname secondname email password confirm]
-  (let [tx-name [{:client/firstName firstname
-                  :client/lastName secondname
-                  :client/email email}]
-        {:keys [db-after]} @(d/transact conn tx-name)
-        data (d/touch (d/entity db-after [:client/email email]))]
-    (success/display-success-registration data)))
 
 (def valid-email-pattern
   #"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
 
-(defn user-input-valid? [email password confirm-pass]
+(defn user-input-valid? [{:keys [email password confirm]}]
   ;; first check we have input
-  (when (and email password confirm-pass)
-    ;; clean whitespace from input
-    (let [password     (clojure.string/trim password)
-          confirm-pass (clojure.string/trim confirm-pass)
-          email        (clojure.string/trim email)]
-      ;; validate email structure and check password equality
-      (and (string? email)
-           (re-matches valid-email-pattern email)
-           ()
-           (= password confirm-pass)))))
+  (boolean
+   (when (and email password confirm)
+     ;; clean whitespace from input
+     (let [password (string/trim password)
+           confirm  (string/trim confirm)
+           email    (string/trim email)]
+       ;; validate email structure and check password equality
+       (and (string? email)
+            (re-matches valid-email-pattern email)
+            (= password confirm))))))
 
-(defn testing [firstname secondname email password confirm]
-  (if (user-input-valid? email password confirm)
-    (write-user-data firstname secondname email password confirm)
+(defn write-user-data [{:keys [first-name last-name email password]}]
+  (let [tx-name [{:db/id             "tempid.user"
+                  :client/first-name first-name
+                  :client/last-name  last-name
+                  :client/email      email
+                  :client/password   password}]
+        {:keys [db-after]} @(d/transact (conn) tx-name)
+        data (d/touch (d/entity db-after [:client/email email]))]
+    (success/display-success-registration data)))
+
+(defn capture-user-registration [registration-data]
+  (if (user-input-valid? registration-data)
+    (write-user-data registration-data)
     "Please input a valid email address"))
 
+(comment
+  (setup-database!)
 
-(defn capture-user-registration [req]
-  (println "Request map:" req)
-  (let [{{:keys [firstname secondname email password password-confirm]}:params} req]
-    (testing firstname secondname email password password-confirm)
-    )
+  (capture-user-registration
+   {:first-name "Miweerwerwwrwerke"
+    :last-name  "Jerwerwerwerwack"
+    :email      "serwerwrwyay@hello.com"
+    :password   "asdfsa1111"
+    :confirm    "asdfsa1111"})
   )
-
-
