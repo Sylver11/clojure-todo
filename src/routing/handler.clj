@@ -3,10 +3,11 @@
             [compojure.route :as route]
             [ring.adapter.jetty :as jetty]
             [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
+            [ring.middleware.session :refer [wrap-session]]
             [routing.database-writes :as database-writes]
             [routing.layout :as layout]
-            [routing.views.about :as about]
-            [routing.views.experience :as experience]
+            [routing.views.todo :as todo]
+            [routing.views.registration :as registration]
             [routing.views.index :as index]
             [routing.views.portfolio :as portfolio]
             [routing.views.success :as success]))
@@ -16,14 +17,19 @@
   (GET "/" []
     (layout/application "Justus Voigt" (index/index-page)))
 
-  (GET "/experience" []
-    (layout/application "My experience" (experience/experience-page)))
+  (GET "/register" []
+    (layout/application "Register here" (registration/register-form)))
 
-  (GET "/about" []
-    (layout/application "Just about me" (about/about-page)))
+  (GET "/my-todo" []
+    (layout/application "My Todo list" (todo/todo-list)))
 
   (GET "/portfolio" []
     (layout/application "My projects" (portfolio/portfolio-page)))
+
+  (POST "/get-user-data" req
+    (layout/application ""
+                        (routing.views.login/get-user-by-email-and-password
+                         (:params req))))
 
   (POST "/get-submit" req
     (layout/application "Your input"
@@ -35,9 +41,15 @@
 
   (route/not-found "Not Found"))
 
-(def app
+(def app1
   (wrap-defaults app-routes
                  (assoc-in site-defaults [:security :anti-forgery] false)))
+
+(def app
+  (-> app-routes
+      (wrap-defaults (assoc-in site-defaults [:security :anti-forgery] false))
+      (wrap-session {:cookie-attrs {:max-age 3600}}))
+  )
 
 (defonce *server (atom nil))
 

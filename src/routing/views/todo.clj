@@ -1,9 +1,10 @@
-(ns routing.views.about
+(ns routing.views.todo
    (:use [hiccup core page]
         [hiccup.element :only (link-to)]
         [hiccup.element :only (image)]
         )
-  )
+   )
+
 
 (defn about-page []
   [:div {:id "content"}

@@ -5,8 +5,14 @@
 
 (def db-uri "datomic:dev://localhost:4334/todo")
 
+(def uuid (d/squuid))
+
 (def add-entity-schema
-  [{:db/ident       :client/first-name
+  [{:db/ident       :client/uuid
+    :db/index       true
+    :db/valueType   :db.type/uuid
+    :db/cardinality :db.cardinality/one}
+   {:db/ident       :client/first-name
     :db/index       true
     :db/valueType   :db.type/string
     :db/cardinality :db.cardinality/one}
@@ -26,9 +32,10 @@
 (def db (comp d/db conn))
 
 (defn setup-database! []
-  ;(d/delete-database db-uri)
+  (d/delete-database db-uri)
   (d/create-database db-uri)
-  (d/transact (conn) add-entity-schema))
+  (d/transact (conn) add-entity-schema)
+  )
 
 (def valid-email-pattern
   #"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
@@ -48,6 +55,7 @@
 
 (defn write-user-data [{:keys [first-name last-name email password]}]
   (let [tx-name [{:db/id             "tempid.user"
+                  :client/uuid       (d/squuid)
                   :client/first-name first-name
                   :client/last-name  last-name
                   :client/email      email
