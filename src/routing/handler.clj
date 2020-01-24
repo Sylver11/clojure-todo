@@ -9,7 +9,7 @@
             [routing.views.todo :as todo]
             [routing.views.registration :as registration]
             [routing.views.index :as index]
-            [routing.views.portfolio :as portfolio]
+            [routing.views.login :as login]
             [routing.views.success :as success]))
 
 (defroutes app-routes
@@ -23,8 +23,8 @@
   (GET "/my-todo" []
     (layout/application "My Todo list" (todo/todo-list)))
 
-  (GET "/portfolio" []
-    (layout/application "My projects" (portfolio/portfolio-page)))
+  (GET "/login" []
+    (layout/application "Please login" (login/login-form)))
 
   (POST "/get-user-data" req
     (layout/application ""

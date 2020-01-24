@@ -22,45 +22,30 @@
 
 
 
-;; (defn get-user-by-email-and-password [email password]
-;;   (let [client (d/q '[:find ?u ?fn
-;;                       ;; :in $
-;;                       :keys uuid first-name
-;;                       :where
-;;                       [?c :client/uuid ?u]
-;;                       [?c :client/first-name ?fn]
-;;                       [?c :client/email ?email]
-;;                       [?c :client/password ?password]
-;;                       ]
-;;                     (database-writes/db))]
-;;     [:h2 "Hi " (:first-name client)]
-;;     [:p "Your uuid code is " (:uuid client)]))
 
-
-
-
-(defn get-user-by-email-and-password [email password]
+(defn get-user-by-email-and-password [{:keys [email password]}]
   (hiccup/html
    [:div
     (let [client (d/q '[:find ?uuid ?first-name
                       :keys  uuid first-name
                       :where
-                      [?c :client/email "testing@testing.com"]
-                      [?c :client/password "11"]
+                      [?c :client/email ?email]
+                      [?c :client/password ?password]
                       [?c :client/uuid ?uuid]
                       [?c :client/first-name ?first-name]
                       ]
                       (database-writes/db))]
-      (if-not (clojure.string/blank? :uuid client)
-        (do (response/redirect "/my-todo" 200)
-        (println "redirecting"))
-        [:p "Please try egain. Either your email or password was incorrect"]
-        )
-     [:p "Hi " (:first-name client)]
-     [:h1 "Your uuid code is " (:uuid client)]
-     )
-    ]
-   ))
+      (if (clojure.string/blank? (str (:uuid client)))
+        [:p "It is blank"]
+        [:p "It is not blank"]
+        ;; (do (response/redirect "/my-todo")
+        ;;      (println "redirecting"))
+        ;; [:p "Please try egain. Either your email or password was incorrect"]
+        ;;     )
+        ))]))
+
 
 (comment
-  (get-user-by-email-and-password "testing@testing.com" "11"))
+  (get-user-by-email-and-password
+    {:email      "testing@testing.com"
+    :password   "11"}))
