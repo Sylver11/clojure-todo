@@ -32,15 +32,14 @@
             [:div {:class "collapse navbar-collapse" :id "navbarSupportedcontent"}
              [:ul {:class "navbar-nav mr-auto"}
               [:li {:class "nav-item active"}
-               (link-to {:class "nav-link"} "/about" "About")]
+               (link-to {:class "nav-link"} "/my-todo" "My Todo")]
               [:li {:class "nav-item"}
-               (link-to {:class "nav-link"} "/experience" "Experience")]
+               (link-to {:class "nav-link"} "/profile" "Profile")]
               [:li {:class "nav-item"}
                (link-to {:class "nav-link"} "/portfolio" "Portfolio")]
               ]
-             [:form {:class "form-inline my-2 my-lg-0"}
-              [:input {:class "form-control mr-sm-2" :tye "text" :placeholder "Search" :aria-label "Search"}]
-              [:button {:class "btn btn-outline-success my-2 my-sm-0" :type "Submit"}  "Search"]
+             [:form {:class "form-inline my-2 my-lg-0" :method "POST" :action "logout"}
+              [:button {:class "btn btn-outline-success my-2 my-sm-0" :type "Submit"}  "Logout"]
               ]
              ]
             ]

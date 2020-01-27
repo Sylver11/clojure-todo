@@ -2,7 +2,8 @@
   (:require [hiccup.core :as hiccup]
             [datomic.api :as d]
             [routing.database-writes :as database-writes]
-            [ring.util.response :as response]))
+            [ring.util.response :as response]
+            [noir.session :as session]))
 
 
 (defn login-form []
@@ -21,31 +22,40 @@
     ]))
 
 
-
+;; (defn redirect-login []
+;;   routing.handler/app
+;;   {:status 302
+;;    :header "/my-todo"
+;;    :body ""
+;;    }
+;;   )
 
 (defn get-user-by-email-and-password [{:keys [email password]}]
   (hiccup/html
    [:div
-    (let [client (d/q '[:find ?uuid ?first-name
-                      :keys  uuid first-name
-                      :where
-                      [?c :client/email ?email]
-                      [?c :client/password ?password]
-                      [?c :client/uuid ?uuid]
-                      [?c :client/first-name ?first-name]
-                      ]
-                      (database-writes/db))]
-      (if (clojure.string/blank? (str (:uuid client)))
-        [:p "It is blank"]
-        [:p "It is not blank"]
-        ;; (do (response/redirect "/my-todo")
-        ;;      (println "redirecting"))
-        ;; [:p "Please try egain. Either your email or password was incorrect"]
-        ;;     )
+    (let [[client] (d/q '[:find ?uuid ?first-name
+                          :in $ ?email ?password
+                          :keys  uuid first-name
+                          :where
+                          [?c :client/email ?email]
+                          [?c :client/password ?password]
+                          [?c :client/uuid ?uuid]
+                          [?c :client/first-name ?first-name]]
+                    (database-writes/db) email password)]
+      (if (clojure.string/blank? (str client))
+        [:div
+         [:p "Sorry either your email or password do not match up."]
+         [:a {:href "/login"} "Return to login"]]
+        (session/put! :username (:email client))
+        ;; (response/redirect "/my-todo" 200)
+        ;; (do (response/redirect "/my-todo"))
         ))]))
-
 
 (comment
   (get-user-by-email-and-password
+   ;"testing@testing.com" "11"
     {:email      "testing@testing.com"
-    :password   "11"}))
+    :password   "11"}
+    ))
+
+
