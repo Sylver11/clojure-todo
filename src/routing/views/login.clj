@@ -31,8 +31,6 @@
 ;;   )
 
 (defn get-user-by-email-and-password [{:keys [email password]}]
-  (hiccup/html
-   [:div
     (let [[client] (d/q '[:find ?uuid ?first-name
                           :in $ ?email ?password
                           :keys  uuid first-name
@@ -43,13 +41,13 @@
                           [?c :client/first-name ?first-name]]
                     (database-writes/db) email password)]
       (if (clojure.string/blank? (str client))
-        [:div
-         [:p "Sorry either your email or password do not match up."]
-         [:a {:href "/login"} "Return to login"]]
-        (session/put! :username (:email client))
-        ;; (response/redirect "/my-todo" 200)
-        ;; (do (response/redirect "/my-todo"))
-        ))]))
+        (hiccup/html
+         [:div
+           [:p "Sorry either your email or password do not match up."]
+           [:a {:href "/login"} "Return to login"]])
+        (do (session/put! :username (:email client))
+            (response/redirect "/my-todo")))))
+
 
 (comment
   (get-user-by-email-and-password

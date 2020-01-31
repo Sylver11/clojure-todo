@@ -12,7 +12,8 @@
             [routing.views.registration :as registration]
             [routing.views.index :as index]
             [routing.views.login :as login]
-            [routing.views.success :as success]))
+            [routing.views.success :as success]
+            [routing.views.logout :as logout]))
 
 (defroutes app-routes
 
@@ -23,18 +24,23 @@
     (layout/application "Registration" (registration/register-form)))
 
   (GET "/my-todo" []
-    (layout/application "My Todo list" (todo/todo-list)))
+    (if (= nil (session/get :username))
+      (response/redirect "/login")
+      (layout/application "My Todo list" (todo/todo-list)) )
+    )
 
   (GET "/login" []
     (layout/application "Login" (login/login-form)))
 
   (POST "/logout" []
-     ((response/redirect "/")(session/clear!)))
+   (do (session/clear! :username)
+        (response/redirect "/")
+    ;; (layout/application "Logout" (logout/success))
+        ))
 
   (POST "/get-user-data" req
-    (layout/application ""
-                        (routing.views.login/get-user-by-email-and-password
-                         (:params req))))
+    (routing.views.login/get-user-by-email-and-password
+                         (:params req)))
 
   (POST "/get-submit" req
     (layout/application "Your input"
