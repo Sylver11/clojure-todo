@@ -43,9 +43,8 @@
                          (:params req)))
 
   (POST "/get-submit" req
-    (layout/application "Your input"
-                        (database-writes/capture-user-registration
-                         (:params req))))
+    (database-writes/capture-user-registration
+                         (:params req)))
 
   (GET "/success" []
     (layout/application "Your input" (success/display-success-registration)))
