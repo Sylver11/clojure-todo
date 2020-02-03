@@ -52,8 +52,8 @@
 (comment
   (get-user-by-email-and-password
    ;"testing@testing.com" "11"
-    {:email      "testing@testing.com"
-    :password   "11"}
+    {:email      "joseph@cognician.com"
+    :password   "1"}
     ))
 
 

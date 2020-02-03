@@ -7,19 +7,19 @@
   (hiccup/html
    [:div
     [:ul
-     (for [client (d/q '[:find ?u ?fn ?ln ?em
-                         :keys uuid first-name last-name email
-                         :where
-                         [?c :client/uuid ?u]
-                         [?c :client/first-name ?fn]
-                         [?c :client/last-name ?ln]
-                         [?c :client/email ?em]]
-                       (database-writes/db))]
-       [:li [:strong (:first-name client) " "
-             (:last-name client)] [:br]
-        [:p "hel"] [:br]
-        [:a {:href (str "mailto:" (:email client))}
-         (:email client)]])
+     ;; (for [client (d/q '[:find ?u ?fn ?ln ?em
+     ;;                     :keys uuid first-name last-name email
+     ;;                     :where
+     ;;                     [?c :client/uuid ?u]
+     ;;                     [?c :client/first-name ?fn]
+     ;;                     [?c :client/last-name ?ln]
+     ;;                     [?c :client/email ?em]]
+     ;;                   (database-writes/db))]
+     ;;   [:li [:strong (:first-name client) " "
+     ;;         (:last-name client)] [:br]
+     ;;    [:p "hel"] [:br]
+     ;;    [:a {:href (str "mailto:" (:email client))}
+     ;;     (:email client)]])
      ]]
 
    [:form {:method "POST" :action "get-submit"}

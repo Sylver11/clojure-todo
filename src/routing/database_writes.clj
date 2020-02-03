@@ -32,7 +32,7 @@
 (def db (comp d/db conn))
 
 (defn setup-database! []
-  (d/delete-database db-uri)
+ ;; (d/delete-database db-uri)
   (d/create-database db-uri)
   (d/transact (conn) add-entity-schema)
   )
