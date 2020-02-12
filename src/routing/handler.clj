@@ -4,16 +4,16 @@
             [ring.adapter.jetty :as jetty]
             [ring.util.response :as response]
             [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
-            ;; [ring.middleware.session :refer [wrap-session]]
-            [noir.session :as session]
+            [ring.middleware.session :refer [wrap-session]]
+            ;; [ring.middleware.session :as session]
+            ;; [noir.session :as session]
             [routing.database-writes :as database-writes]
             [routing.layout :as layout]
             [routing.views.todo :as todo]
             [routing.views.registration :as registration]
             [routing.views.index :as index]
             [routing.views.login :as login]
-            [routing.views.success :as success]
-            [routing.views.logout :as logout]))
+            [routing.views.success :as success]))
 
 (defroutes app-routes
 
@@ -23,40 +23,58 @@
   (GET "/register" []
     (layout/application "Registration" (registration/register-form)))
 
-  (GET "/my-todo" []
-    (if (= nil (session/get :username))
-      (response/redirect "/login")
-      (layout/application "My Todo list" (todo/todo-list)) )
+  (GET "/todo" req
+    (let [{{:keys [first-name]}:session} req]
+      (if (= nil first-name)
+        (ring.util.response/redirect "/login")
+        (layout/application "My Todo" (todo/todo-list first-name))
+        ))
     )
 
   (GET "/login" []
     (layout/application "Login" (login/login-form)))
 
-  (POST "/logout" []
-   (do (session/remove! :username)
-        (response/redirect "/")
-    ;; (layout/application "Logout" (logout/success))
-        ))
+  (POST "/logout" [req]
+   (-> (ring.util.response/redirect "/")
+            (assoc :session (-> nil))))
 
   (POST "/get-user-data" req
-    (routing.views.login/get-user-by-email-and-password
-                         (:params req)))
+    (routing.views.login/get-user-by-email-and-password req))
 
   (POST "/get-submit" req
     (database-writes/capture-user-registration
                          (:params req)))
 
-  (GET "/success" []
-    (layout/application "Your input" (success/display-success-registration)))
 
-  (route/not-found "Not Found"))
+  (POST "/add-item-by-user" req
+
+     (database-writes/add-item req)
+    )
+
+  (POST "/delete-by-user" req
+
+     (database-writes/delete-item req)
+    )
+
+   (POST "/done-by-user" req
+
+     (database-writes/done-item req)
+    )
+
+ (GET "/success" []
+   (layout/application "Your input" (success/display-success-registration)))
+
+
+ (GET "/map" req
+   (str req))
+
+ (route/not-found "Not Found"))
 
 
 (def app
   (-> app-routes
-      (session/wrap-noir-session)
       (wrap-defaults (assoc-in site-defaults [:security :anti-forgery] false))
-      ;; (wrap-session {:cookie-attrs {:max-age 3600}})
+      (wrap-session {:cookie-attrs {:max-age 3600}})
       )
   )
 

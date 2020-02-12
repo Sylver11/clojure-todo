@@ -2,8 +2,7 @@
   (:require [hiccup.core :as hiccup]
             [datomic.api :as d]
             [routing.database-writes :as database-writes]
-            [ring.util.response :as response]
-            [noir.session :as session]))
+            ))
 
 
 (defn login-form []
@@ -22,16 +21,13 @@
     ]))
 
 
-;; (defn redirect-login []
-;;   routing.handler/app
-;;   {:status 302
-;;    :header "/my-todo"
-;;    :body ""
-;;    }
-;;   )
-
-(defn get-user-by-email-and-password [{:keys [email password]}]
-    (let [[client] (d/q '[:find ?uuid ?first-name
+(defn get-user-by-email-and-password [req]
+  (let [{params :params} req
+        {email :email} params
+        {password :password} params
+        ;; {session :session}
+       ;; req
+        [client] (d/q '[:find ?uuid ?first-name
                           :in $ ?email ?password
                           :keys  uuid first-name
                           :where
@@ -44,16 +40,17 @@
         (hiccup/html
          [:div
            [:p "Sorry either your email or password do not match up."]
-           [:a {:href "/login"} "Return to login"]])
-        (do (session/put! :username (:email client))
-            (response/redirect "/my-todo")))))
-
+          [:a {:href "/login"} "Return to login"]])
+        (-> (ring.util.response/redirect "/todo")
+            (assoc :session (-> :username (:first-name client))))
+        )))
 
 (comment
   (get-user-by-email-and-password
-   ;"testing@testing.com" "11"
-    {:email      "joseph@cognician.com"
+    {:params {:email      "joseph@cognician.com"
     :password   "1"}
-    ))
+     }
+    )
+  )
 
 

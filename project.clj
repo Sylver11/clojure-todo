@@ -11,6 +11,7 @@
                  [com.datomic/datomic-pro "0.9.5951"]
                  [ring/ring-jetty-adapter "1.6.3"]
                  [org.eclipse.jetty/jetty-server "9.3.7.v20160115"]
+                 [clj-time "0.15.2"]
                  [lib-noir "0.9.9"]]
   :plugins [[lein-ring "0.12.5"]]
   :ring {:handler routing.handler/app}
