@@ -31,11 +31,14 @@
     :db/cardinality :db.cardinality/one}])
 
 (def add-todo-schema
-  [{:db/ident       :todo/email
+  [{:db/ident       :todo/uuid
+    :db/valueType   :db.type/uuid
+    :db/unique      :db.unique/identity
+    :db/cardinality :db.cardinality/one}
+   {:db/ident       :todo/email
     :db/valueType   :db.type/string
     :db/cardinality :db.cardinality/one}
    {:db/ident       :todo/item
-    :db/unique      :db.unique/identity
     :db/valueType   :db.type/string
     :db/cardinality :db.cardinality/one}
    {:db/ident       :todo/time
@@ -53,7 +56,7 @@
 (def db (comp d/db conn))
 
 (defn setup-database! []
-  (d/delete-database db-uri)
+ ;; (d/delete-database db-uri)
   (d/create-database db-uri)
   (d/transact (conn) add-entity-schema)
   (d/transact (conn) add-todo-schema)
@@ -102,7 +105,8 @@
         {due :due} params
         {{:keys [first-name]} :session} req
       ;  due-updated [(f/parse custom-formatter (clojure.string/replace due #"T" "-"))]
-        tx-name [{:todo/email first-name
+        tx-name [{:todo/uuid (d/squuid)
+                  :todo/email first-name
                   :todo/item  item
                   :todo/time  (java.util.Date.);; #inst "1985-04-14T23:20:50.52Z"
                   :todo/due   (c/to-date due)
@@ -116,43 +120,71 @@
      ;; (success/display-success-registration data)
      ))
 
-(defn delete-item [req]
-  (let [{params :params} req
-        {delete :delete} params
-        {{:keys [first-name]} :session} req
-        tx-delete [[:db/retract [:todo/item delete] :todo/email first-name]
-            [:db/add "datomic.tx" :db/doc "remove incorrect assertion"]]]
+(defn delete-item [{{:keys [delete]} :params
+                  {:keys [first-name]} :session
+                  :as req}]
+  (let [[todo-uuid](d/q '[:find ?uuid
+                           :keys uuid
+                           :in $ ?first-name ?delete
+                           :where
+                           [?e  :todo/email ?first-name]
+                           [?e  :todo/item ?delete]
+                           [?e  :todo/uuid ?uuid]]
+                        (db) first-name delete)
+        tx-delete [[:db/retract [:todo/uuid (:uuid todo-uuid)] :todo/item delete]
+                   [:db/add "datomic.tx" :db/doc "remove assertion"]]]
     (d/transact (conn) tx-delete)
     (response/redirect "/todo")
-       ;; data ;; (d/touch (d/entity db-after [:todo/email first-name]))
-     ;; (success/display-success-registration data)
      ))
 
-(defn done-item [req]
-  (let [{params :params} req
-        {done :done} params
-        {{:keys [first-name]} :session} req
-        tx-delete [{:todo/email first-name
-                                 :todo/item done
-                                 :todo/complete true}]]
-    (d/transact (conn) tx-delete)
+(defn done-item [{{:keys [done]} :params
+                  {:keys [first-name]} :session
+                  :as req}]
+  (let [[todo-uuid] (d/q '[:find ?uuid
+                           :keys uuid
+                           :in $ ?first-name ?done
+                           :where
+                           [?e  :todo/email ?first-name]
+                           [?e  :todo/item ?done]
+                           [?e  :todo/uuid ?uuid]]
+                         (db) first-name done)
+        tx-done [{:todo/uuid  (:uuid todo-uuid)
+                  :todo/complete true}]]
+    (d/transact (conn) tx-done)
     (response/redirect "/todo")
-       ;; data ;; (d/touch (d/entity db-after [:todo/email first-name]))
-     ;; (success/display-success-registration data)
     ))
 
 
+
+(defn edit-item [{{:keys [old-item new-item]} :params
+                  {:keys [first-name]} :session
+                  :as req}]
+  (let [[todo-uuid] (d/q '[ :find ?uuid
+                         :keys uuid
+                          :in $ ?first-name ?old-item
+                          :where
+                          [?e  :todo/email ?first-name]
+                          [?e  :todo/item ?old-item]
+                          [?e  :todo/uuid ?uuid]]
+                       (db) first-name old-item)
+        tx-edit [{:todo/uuid  (:uuid todo-uuid)
+                  :todo/item new-item}]]
+    (d/transact (conn) tx-edit)
+    (response/redirect "/todo")))
 
 
 (comment
   (setup-database!)
 
   (add-item
-   {:params {:item "testing1", :due "1985-04-14T23:20"
+   {:params {:item "testing4", :due "1985-04-14T23:20"
              },
     :session {:first-name "Justus"}
      }
-    )
+   )
+  (edit-item
+   {:params {:old-item "testing4", :new-item "new fucntion working"},
+    :session {:first-name "Justus"}})
 
   (capture-user-registration
    {:first-name "Justus"
@@ -162,9 +194,9 @@
     :confirm    "1"})
   )
 
-(defn delete []
-  (let [tx-name [[:db/retract [:todo/item "testing3"] :todo/email "Justus"]
-            [:db/add "datomic.tx" :db/doc "remove incorrect assertion"]]]
+(defn edit-test []
+  (let [tx-name [{:todo/uuid #uuid "5e4512a2-b6e3-4594-933b-129dc0edd13c" ;;(:db-id todo-entry)
+                  :todo/item "now again "}]]
     (d/transact (conn) tx-name)))
 
 

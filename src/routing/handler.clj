@@ -59,6 +59,10 @@
    (POST "/done-by-user" req
 
      (database-writes/done-item req)
+     )
+  (POST "/edit-by-user" req
+
+     (database-writes/edit-item req)
     )
 
  (GET "/success" []

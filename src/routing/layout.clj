@@ -13,6 +13,7 @@
           (include-css "https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css")
           (include-css "css/styles.css")
           (include-css "css/all.css")
+          (include-css "https://fonts.googleapis.com/icon?family=Material+Icons")
           (include-css "css/bootstrap.css")
           (include-css "css/freelancer.css")
           (include-js "https://code.jquery.com/jquery-3.3.1.slim.min.js")
