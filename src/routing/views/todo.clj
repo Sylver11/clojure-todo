@@ -42,7 +42,7 @@
                        ]
                      (database-writes/db) first-name)]
 
-       [:li {:class (str "list-item-"  (string/replace (:item todo) #"  *" ""))} [:script "
+       [:li {:style "padding:10px; margin:20px;" :class (str "list-item-"  (string/replace (:item todo) #"  *" ""))} [:script "
 
 
 $(document).ready(function() {
@@ -59,30 +59,23 @@ $(document).ready(function() {
                          )"
     if (doneItem == true){
      $('."(str "list-item-"  (string/replace (:item todo) #"  *" ""))"').css(\"background-color\", \"green\");
-     $('."(str "hour-"  (string/replace (:item todo) #"  *" ""))"').html(\"Complete\");
+     $('."(str "time-"  (string/replace (:item todo) #"  *" ""))"').html(\"Complete\");
     }
     else if (totalMinutes != \"Overdue\"){
 
   d = Math.floor(totalMinutes/1440); // 60*24
   h = Math.floor((totalMinutes-(d*1440))/60);
   m = Math.round(totalMinutes%60);
-   //   if(d>0){
-   // return(d + \" days, \" + h + \" hours, \" +m+\" minutes \");
-//  }else{
-  //  return(h + \" hours, \" +m+\" minutes \");
- // }
-   // var hours = Math.floor(totalMinutes / 60);
-   // var minutes = totalMinutes % 60;
+
 
     $('."(str "time-"  (string/replace (:item todo) #"  *" ""))"').html((d + \" days, \" + h + \" hours, \" +m+\" minutes \"));
-   // $('."(str "min-"  (string/replace (:item todo) #"  *" ""))"').html(minutes + \"min\");
     }
     else {
    $('."(str "list-item-"  (string/replace (:item todo) #"  *" ""))"').css(\"background-color\", \"yellow\");
- $('."(str "hour-"  (string/replace (:item todo) #"  *" ""))"').html(\"Overdue\");
+ $('."(str "time-"  (string/replace (:item todo) #"  *" ""))"').html(\"Overdue\");
     }
 
-});"] (:item todo) [:br]
+});"] [:p {:style "font-size: 25px;"} (:item todo)]
         [:p {:style "display: inline" :class (str "time-"  (string/replace (:item todo) #"  *" ""))}]
         [:p {:style "display: inline" :class (str "min-"  (string/replace (:item todo) #"  *" ""))}]
 
@@ -129,21 +122,4 @@ console.log(\"the if statement is also running\");
 
    ))
 
-;; function "(str  "inputField"
-;;                                           (string/replace (:item todo) #"  *" "")) "() {
-;;     }
-;; (for [movies (d/q '[:find ?movie-title
-;;                   :keys movie-title
-;;                   :where
-;;                        [_  :movie/title ?movie-title]
-;;                        ]
-;;                        (db))]
-;;   [:li (:movie-title movies)])
-
-
-;; (d/q '[:find ?item
-;;                        :where
-;;                        [_  :todo/item ?item]
-;;                        ]
-;;                        (db))xb
 
