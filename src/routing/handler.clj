@@ -17,22 +17,27 @@
 
 (defroutes app-routes
 
-  (GET "/" []
-    (layout/application "My TODO" (index/index-page)))
+  (GET "/" req
+    (layout/application "My TODO" (index/index-page) req))
 
-  (GET "/register" []
-    (layout/application "Registration" (registration/register-form)))
+  (GET "/register" req
+    (layout/application "Registration" (registration/register-form) req))
 
   (GET "/todo" req
     (let [{{:keys [first-name]}:session} req]
       (if (= nil first-name)
         (ring.util.response/redirect "/login")
-        (layout/application "My Todo" (todo/todo-list first-name))
+        (layout/application "My Todo" (todo/todo-list first-name) req)
         ))
     )
 
-  (GET "/login" []
-    (layout/application "Login" (login/login-form)))
+  (GET "/login" req
+    (let [{{:keys [first-name]}:session} req]
+      (if (= nil first-name)
+        (layout/application "Login" (login/login-form) req)
+        (ring.util.response/redirect "/todo")
+        ))
+    )
 
   (POST "/logout" [req]
    (-> (ring.util.response/redirect "/")

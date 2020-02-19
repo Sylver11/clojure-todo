@@ -6,7 +6,7 @@
   )
 
 
-(defn application [title & content]
+(defn application [title content {{:keys [first-name]}:session}]
   (html5 {:ng-app "myApp" :lang "en"}
          [:head
           [:title title]
@@ -32,16 +32,25 @@
              [:span {:class "navbar-toggler-icon"}]]
             [:div {:class "collapse navbar-collapse" :id "navbarSupportedcontent"}
              [:ul {:class "navbar-nav mr-auto"}
-              [:li {:class "nav-item active"}
-               (link-to {:class "nav-link"} "/my-todo" "My Todo")]
-              [:li {:class "nav-item"}
-               (link-to {:class "nav-link"} "/profile" "Profile")]
-              [:li {:class "nav-item"}
-               (link-to {:class "nav-link"} "/portfolio" "Portfolio")]
-              ]
-             [:form {:class "form-inline my-2 my-lg-0" :method "POST" :action "logout"}
+              (if (= nil first-name)
+                [:li {:class "nav-item"}
+               (link-to {:class "nav-link"} "/register" "Register")]
+                [:li {:class "nav-item active"}
+               (link-to {:class "nav-link"} "/todo" "My Todo")]
+
+                )
+              ;; [:li {:class "nav-item"}
+              ;;  (link-to {:class "nav-link"} "/profile" "Profile")
+              ] ;; (let [{{:keys [first-name]}:session} req]
+      (if (= nil first-name)
+        [:form [:input {:class "btn btn-outline-success my-2 my-sm-0" :type "button" :onclick "window.location.href = '/login';" :value "Login"}]]
+        [:form {:class "form-inline my-2 my-lg-0" :method "POST" :action "logout"}
               [:button {:class "btn btn-outline-success my-2 my-sm-0" :type "Submit"}  "Logout"]
               ]
+
+        )
+
+             ;; )
              ]
             ]
 

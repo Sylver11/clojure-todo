@@ -28,7 +28,12 @@
     :db/cardinality :db.cardinality/one}
    {:db/ident       :client/password
     :db/valueType   :db.type/string
-    :db/cardinality :db.cardinality/one}])
+    :db/cardinality :db.cardinality/one}
+   {:db/ident       :client/new
+    :db/unique      :db.unique/identity
+    :db/valueType   :db.type/boolean
+    :db/cardinality :db.cardinality/one}
+   ])
 
 (def add-todo-schema
   [{:db/ident       :todo/uuid
@@ -84,7 +89,8 @@
                   :client/first-name first-name
                   :client/last-name  last-name
                   :client/email      email
-                  :client/password   password}]
+                  :client/password   password
+                  :client/new        true}]
         {:keys [db-after]} @(d/transact (conn) tx-name)
         data (d/touch (d/entity db-after [:client/email email]))]
     (success/display-success-registration data)))
@@ -98,6 +104,12 @@
 
 ;; (def custom-formatter (f/formatter "yyyy-MM-dd-H:mm"))
 ;; (c/to-date "1985-04-14T23:20")
+(defn recurring-user [req first-name]
+  (let [tx-new [{:client/first-name first-name
+                  :client/new req}]]
+    (d/transact (conn) tx-new)
+    )
+    )
 
 (defn add-item [req]
   (let [{params :params} req
@@ -115,6 +127,7 @@
         ;; {:keys [db-after]}
        ;; @
     (d/transact (conn) tx-name)
+    (recurring-user false first-name)
     (response/redirect "/todo")
        ;; data ;; (d/touch (d/entity db-after [:todo/email first-name]))
      ;; (success/display-success-registration data)
@@ -179,7 +192,7 @@
   (add-item
    {:params {:item "testing4", :due "1985-04-14T23:20"
              },
-    :session {:first-name "Justus"}
+    :session {:first-name "Papa"}
      }
    )
   (edit-item
@@ -189,7 +202,7 @@
   (capture-user-registration
    {:first-name "Justus"
     :last-name  "Voigt"
-    :email      "justus.sylvester@hotmail.de"
+    :email      "justus@cognician.com"
     :password   "1"
     :confirm    "1"})
   )

@@ -11,25 +11,26 @@
   )
 
 
-
-
-(defn todo-list [first-name]
-  (hiccup/html
-   [:div
+(defn render-page [first-name]
+  [:div
     [:p "Hi " (str first-name)]
     [:form {:method "POST" :action "add-item-by-user"}
     [:div {:class "form-group"}
-     [:label {:for "formGroupExampleInput2"} "item"]
-     [:input {:type "text" :name "item" :class "form-control" :id "formGroupExampleInput2" :placeholder "Do dishes"}
+
+     [:input {:required "" :type "text" :name "item" :class "form-control" :id "formGroupExampleInput1" :placeholder "Do dishes"}
       ]
-     [:label {:for "formGroupExampleInput2"} "due"]
-     [:input {:type "datetime-local" :name "due" :class "form-control" :id "formGroupExampleInput2" }
+     [:label {:for "formGroupExampleInput1"} "Item"]
+
+
+     [:input {:required "" :type "datetime-local" :name "due" :class "form-control" :id "formGroupExampleInput2" }
       ]
+     [:label {:for "formGroupExampleInput2"} "Due"]
      ]
      [:button {:type "submit" :class "btn btn-success"} "Add item"]]
+   [:br]
 
 [:div
- [:ul {:style "list-style-type: none;"}
+ [:ul {:style "list-style-type: none;" :class "list-group"}
   (for [todo
         (sort-by :updated-due
                  (for [todo (d/q '[:find ?item ?time ?due ?complete
@@ -47,16 +48,20 @@
                    (assoc todo :updated-due
                           (cond
                             (= (:complete todo) true) 99999
-                            (t/after?  (edn/read-string {:readers c/data-readers}(pr-str (c/from-date (:due todo))))
-                                         (edn/read-string {:readers c/data-readers}(pr-str (c/from-date (java.util.Date.)))))
-                            (t/in-minutes (t/interval  (edn/read-string {:readers c/data-readers}
-                                                                        (pr-str (c/from-date (java.util.Date.))))   (edn/read-string {:readers c/data-readers} (pr-str (c/from-date (:due todo))))))
+                            (t/after?  (edn/read-string {:readers c/data-readers}
+                                                       (pr-str (c/from-date (:due todo))))
+                                         (edn/read-string {:readers c/data-readers}
+                                                       (pr-str (c/from-date (java.util.Date.)))))
+                            (t/in-minutes (t/interval
+                                           (edn/read-string {:readers c/data-readers}
+                                                                     (pr-str (c/from-date (java.util.Date.))))
+                                           (edn/read-string {:readers c/data-readers} (pr-str (c/from-date (:due todo))))))
 
                             :else 0
                             ))
                    ))]
 
-         [:li  {:style "padding:10px; margin:20px;" :class (str "list-item-"  (string/replace (:item todo) #"  *" ""))} [:script "
+         [:li  {:style "padding:10px; margin:20px;" :class "list-group-item" :id (str "list-item-"  (string/replace (:item todo) #"  *" ""))} [:script "
 
 
 $(document).ready(function() {
@@ -72,7 +77,7 @@ $(document).ready(function() {
                          "'Overdue'"
                          )"
     if (doneItem == true){
-     $('."(str "list-item-"  (string/replace (:item todo) #"  *" ""))"').css(\"background-color\", \"green\");
+     $('#"(str "list-item-"  (string/replace (:item todo) #"  *" ""))"').css(\"background-color\", \"#9ACD32\");
      $('."(str "time-"  (string/replace (:item todo) #"  *" ""))"').html(\"Complete\");
     }
     else if (totalMinutes != \"Overdue\"){
@@ -83,7 +88,7 @@ $(document).ready(function() {
     $('."(str "time-"  (string/replace (:item todo) #"  *" ""))"').html((d + \" days, \" + h + \" hours, \" +m+\" minutes \"));
     }
     else {
-   $('."(str "list-item-"  (string/replace (:item todo) #"  *" ""))"').css(\"background-color\", \"yellow\");
+   $('."(str "list-item-"  (string/replace (:item todo) #"  *" ""))"').css(\"background-color\", \"#FFFF66\");
  $('."(str "time-"  (string/replace (:item todo) #"  *" ""))"').html(\"Overdue\");
     }
 
@@ -124,8 +129,37 @@ console.log(\"the if statement is also running\");
   "]])
 
 
-      ]]]
+  ]]])
 
-   ))
+
+
+(defn todo-list [first-name]
+
+  (let [[client-new] (d/q '[:find ?new
+                  :keys new
+                  :in $ ?first-name
+                  :where
+                  [?e  :client/first-name ?first-name]
+                  [?e  :client/new ?new]]
+                (database-writes/db) first-name)]
+     (if (= (:new client-new) true)
+      (hiccup/html [:script "$(window).on('load',function(){
+        $('#myModal').modal('show');
+    });"] [:div {:class"modal fade" :id "myModal" :tabindex "-1" :role "dialog"}
+           [:div {:class "modal-dialog" :role "document"}
+            [:div {:class "modal-content"}
+             [:div {:class "modal-header"}
+              [:h5 {:class "modal-title" :id "exampleModal3Label"} "Welcome to your personal Todo app"]
+              [:button {:type "button" :class "close" :data-dismiss "modal" :aria-label "Close"} [:span {:aria-hidden "true"} "&times;"] ]]
+             [:div {:class "modal-body"} "You can add, edit and delete any of your entries."]
+             [:div {:class "modal-footer"}
+              [:button {:type "button" :class "btn btn-secondary" :data-dismiss "modal"} "Close"]
+              ]]]]
+                   (render-page first-name)
+                   )
+     (render-page first-name)
+  ;    (print client-new)
+     )
+    ))
 
 
