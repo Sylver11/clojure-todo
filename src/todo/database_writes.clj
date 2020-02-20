@@ -1,7 +1,6 @@
 (ns todo.database-writes
   (:require [clojure.string :as string]
             [datomic.api :as d]
-            [todo.views.success :as success]
             [clj-time.coerce :as c]
             [ring.util.response :as response]))
 

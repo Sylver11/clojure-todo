@@ -33,7 +33,7 @@
    (-> (ring.util.response/redirect "/")
             (assoc :session (-> nil))))
   (POST "/get-user-data" req
-    (routing.views.login/get-user-by-email-and-password req))
+    (todo.views.login/get-user-by-email-and-password req))
   (POST "/get-submit" req
     (database-writes/capture-user-registration
                          (:params req)))
