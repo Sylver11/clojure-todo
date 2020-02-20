@@ -1,7 +1,7 @@
-(ns routing.views.login
+(ns todo.views.login
   (:require [hiccup.core :as hiccup]
             [datomic.api :as d]
-            [routing.database-writes :as database-writes]
+            [todo.database-writes :as database-writes]
             ))
 
 
@@ -15,7 +15,7 @@
       ]]
     [:div {:class "form-group"}
      [:label {:for "formGroupExampleInput2"} "Password"]
-     [:input {:type "password" :name "password" :class "form-control" :id "formGroupExampleInput2" :placeholder "eg MyPasswordIsCrazyStrong.007"}
+     [:input {:type "password" :name "password" :class "form-control" :id "formGroupExampleInput2"}
       ]]
     [:button {:type "submit" :class "btn btn-success"} "Login"]]
     ]))
@@ -25,8 +25,6 @@
   (let [{params :params} req
         {email :email} params
         {password :password} params
-        ;; {session :session}
-       ;; req
         [client] (d/q '[:find ?uuid ?first-name
                           :in $ ?email ?password
                           :keys  uuid first-name

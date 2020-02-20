@@ -1,7 +1,7 @@
-(ns routing.database-writes
+(ns todo.database-writes
   (:require [clojure.string :as string]
             [datomic.api :as d]
-            [routing.views.success :as success]
+            [todo.views.success :as success]
             [clj-time.coerce :as c]
             [ring.util.response :as response]))
 
@@ -93,7 +93,8 @@
                   :client/new        true}]
         {:keys [db-after]} @(d/transact (conn) tx-name)
         data (d/touch (d/entity db-after [:client/email email]))]
-    (success/display-success-registration data)))
+    ;; (success/display-success-registration data)
+    (response/redirect "/login")))
 
 (defn capture-user-registration [registration-data]
   (if (user-input-valid? registration-data)
@@ -101,37 +102,26 @@
     "Please input a valid email address"))
 
 
-
-;; (def custom-formatter (f/formatter "yyyy-MM-dd-H:mm"))
-;; (c/to-date "1985-04-14T23:20")
 (defn recurring-user [req first-name]
   (let [tx-new [{:client/first-name first-name
                   :client/new req}]]
-    (d/transact (conn) tx-new)
-    )
-    )
+    (d/transact (conn) tx-new)))
 
 (defn add-item [req]
   (let [{params :params} req
         {item :item} params
         {due :due} params
         {{:keys [first-name]} :session} req
-      ;  due-updated [(f/parse custom-formatter (clojure.string/replace due #"T" "-"))]
         tx-name [{:todo/uuid (d/squuid)
                   :todo/email first-name
                   :todo/item  item
-                  :todo/time  (java.util.Date.);; #inst "1985-04-14T23:20:50.52Z"
+                  :todo/time  (java.util.Date.)
                   :todo/due   (c/to-date due)
                   :todo/complete false
-                  }] ]
-        ;; {:keys [db-after]}
-       ;; @
+                  }]]
     (d/transact (conn) tx-name)
     (recurring-user false first-name)
-    (response/redirect "/todo")
-       ;; data ;; (d/touch (d/entity db-after [:todo/email first-name]))
-     ;; (success/display-success-registration data)
-     ))
+    (response/redirect "/todo")))
 
 (defn delete-item [{{:keys [delete]} :params
                   {:keys [first-name]} :session

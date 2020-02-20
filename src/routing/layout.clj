@@ -1,4 +1,4 @@
-(ns routing.layout
+(ns todo.layout
   (:use [hiccup.page :only (html5 include-css include-js)]
         [hiccup.element :only (link-to)]
         [hiccup.element :only (image)]
@@ -36,23 +36,12 @@
                 [:li {:class "nav-item"}
                (link-to {:class "nav-link"} "/register" "Register")]
                 [:li {:class "nav-item active"}
-               (link-to {:class "nav-link"} "/todo" "My Todo")]
-
-                )
-              ;; [:li {:class "nav-item"}
-              ;;  (link-to {:class "nav-link"} "/profile" "Profile")
-              ] ;; (let [{{:keys [first-name]}:session} req]
+               (link-to {:class "nav-link"} "/todo" "My Todo")])]
       (if (= nil first-name)
         [:form [:input {:class "btn btn-outline-success my-2 my-sm-0" :type "button" :onclick "window.location.href = '/login';" :value "Login"}]]
         [:form {:class "form-inline my-2 my-lg-0" :method "POST" :action "logout"}
               [:button {:class "btn btn-outline-success my-2 my-sm-0" :type "Submit"}  "Logout"]
-              ]
-
-        )
-
-             ;; )
-             ]
-            ]
+            ])]]
 
            ;;main site with pre-loader
            [:div {:class "spinner-border spinner-border-sm loader" :id "mdb-preloader" :role "status"}]

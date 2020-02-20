@@ -1,27 +1,10 @@
-(ns routing.views.registration
+(ns todo.views.registration
   (:require [hiccup.core :as hiccup]
             [datomic.api :as d]
-            [routing.database-writes :as database-writes]))
+            [todo.database-writes :as database-writes]))
 
 (defn register-form []
   (hiccup/html
-   [:div
-    [:ul
-     ;; (for [client (d/q '[:find ?u ?fn ?ln ?em
-     ;;                     :keys uuid first-name last-name email
-     ;;                     :where
-     ;;                     [?c :client/uuid ?u]
-     ;;                     [?c :client/first-name ?fn]
-     ;;                     [?c :client/last-name ?ln]
-     ;;                     [?c :client/email ?em]]
-     ;;                   (database-writes/db))]
-     ;;   [:li [:strong (:first-name client) " "
-     ;;         (:last-name client)] [:br]
-     ;;    [:p "hel"] [:br]
-     ;;    [:a {:href (str "mailto:" (:email client))}
-     ;;     (:email client)]])
-     ]]
-
    [:form {:method "POST" :action "get-submit"}
     [:div {:class "form-group"}
      [:label {:for "first-name"} "First Name"]
@@ -48,6 +31,6 @@
      [:label {:for "formGroupExampleInput2"} "Confirm Password"]
      [:input {:type "password" :name "confirm" :class "form-control" :id "formGroupExampleInput2" :placeholder "eg MyPasswordIsCrazyStrong.007"}
       ]]
-    [:button {:type "submit" :class "btn btn-success"} "Submit"]]))
+    [:button {:type "submit" :class "btn btn-success"} "Register"]]))
 
 

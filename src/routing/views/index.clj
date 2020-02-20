@@ -1,4 +1,4 @@
-(ns routing.views.index
+(ns todo.views.index
  (:use [hiccup core page]
         [hiccup.element :only (link-to)]
         [hiccup.element :only (image)]
@@ -10,10 +10,6 @@
    [:div {:class "jumbotron jumbotron-fluid"}
     [:div {:class "container"}
      [:span ]
-
-    ;; [:h1 {:class "display-3"} "TODO App"]
-
-
       [:ul {:style "list-style-type: none;"}
        [:li [:div {:class "media"}
    (image {:class "d-flex align-self-start mr-3"} "img/me.jpg")

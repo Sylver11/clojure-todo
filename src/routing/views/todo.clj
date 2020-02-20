@@ -1,4 +1,4 @@
-(ns routing.views.todo
+(ns todo.views.todo
   (:require
    [hiccup.core :as hiccup]
    [datomic.api :as d]
