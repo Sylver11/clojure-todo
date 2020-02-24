@@ -47,6 +47,8 @@
      (database-writes/edit-item req))
   (GET "/map" req
     (str req))
+  ;; (GET "/testing" []
+  ;;   (todo.views.testing/hello))
 
  (route/not-found "Not Found"))
 

@@ -60,7 +60,7 @@
 (def db (comp d/db conn))
 
 (defn setup-database! []
- ;; (d/delete-database db-uri)
+  (d/delete-database db-uri)
   (d/create-database db-uri)
   (d/transact (conn) add-entity-schema)
   (d/transact (conn) add-todo-schema)
@@ -179,9 +179,9 @@
   (setup-database!)
 
   (add-item
-   {:params {:item "testing4", :due "1985-04-14T23:20"
+   {:params {:item "testing2", :due "2020-03-04T23:20"
              },
-    :session {:first-name "Papa"}
+    :session {:first-name "Justus"}
      }
    )
   (edit-item
@@ -189,9 +189,9 @@
     :session {:first-name "Justus"}})
 
   (capture-user-registration
-   {:first-name "Justus"
-    :last-name  "Voigt"
-    :email      "justus@cognician.com"
+   {:first-name "Mama"
+    :last-name  "Mputula"
+    :email      "mama@cognician.com"
     :password   "1"
     :confirm    "1"})
   )
