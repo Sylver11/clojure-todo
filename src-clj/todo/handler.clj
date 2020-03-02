@@ -10,11 +10,13 @@
             [todo.views.todo :as todo]
             [todo.views.registration :as registration]
             [todo.views.index :as index]
+            [todo.views.todo-js :as todo-js]
             [todo.views.login :as login]))
 
 (defroutes app-routes
   (GET "/" req
     (layout/application "My TODO" (index/index-page) req))
+
   (GET "/register" req
     (layout/application "Registration" (registration/register-form) req))
   (GET "/todo" req
@@ -47,6 +49,8 @@
      (database-writes/edit-item req))
   (GET "/map" req
     (str req))
+  (GET "/todo-js" req
+    (layout/application "My Clojure Script TOOD" (todo-js/js-page) req))
   ;; (GET "/testing" []
   ;;   (todo.views.testing/hello))
 

@@ -2,6 +2,7 @@
  (:use [hiccup core page]
         [hiccup.element :only (link-to)]
         [hiccup.element :only (image)]
+        [hiccup.page :only (include-js)]
         )
   )
 
@@ -12,7 +13,8 @@
      [:span ]
       [:ul {:style "list-style-type: none;"}
        [:li [:div {:class "media"}
-   (image {:class "d-flex align-self-start mr-3"} "img/me.jpg")
+             (image {:class "d-flex align-self-start mr-3"} "img/me.jpg")
+             ; (include-js "/js/main.js")
    [:div {:class "media-body"}
     [:h5 {:class "mt-0"} "Hi there, my name is Justus Voigt"]
     [:p {:class ""} "Welcome to my Clojure todo app. Check it out on Github: "   [:span [:a {:style "display:inline;" :href " https://github.com/sylver11/clojure-todo " } "clojure-todo"]]   ]
