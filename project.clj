@@ -20,14 +20,10 @@
   :cljsbuild {
     :builds [{:source-paths ["src-cljs"]
               :compiler {:output-to "resources/public/js/main.js"
-                         :output-dir "resources/public/js"
+                         :output-dir "resources/public/js/out"
                          :optimizations :whitespace
                          :pretty-print true}}]}
-  :uberjar-name "todo.jar"
-  :main clojure-todo.handler
-
-  ;;:ring {:handler todo.handler/app}
-  ;;:profiles
-  ;; {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
-  ;;                       [ring/ring-mock "0.3.2"]]}}
+;  :uberjar-name "todo.jar"
+  :main todo.handler
+  :aot [todo.handler]
   )

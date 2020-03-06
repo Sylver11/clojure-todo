@@ -1,4 +1,5 @@
 (ns todo.handler
+  (:gen-class)
   (:require [compojure.core :refer [defroutes GET POST]]
             [compojure.route :as route]
             [ring.adapter.jetty :as jetty]
@@ -11,7 +12,9 @@
             [todo.views.registration :as registration]
             [todo.views.index :as index]
             [todo.views.todo-js :as todo-js]
-            [todo.views.login :as login]))
+            [todo.views.login :as login])
+  )
+
 
 (defroutes app-routes
   (GET "/" req
@@ -76,7 +79,7 @@
     (.stop server))
   (reset! *server nil))
 
-(defn reset-server! []
+(defn -main []
   ;; 1. stop everything
   (stop-server!)
   ;; 2. "stuart sierra reloaded method" reload changed code
@@ -84,3 +87,4 @@
   (start-server!))
 
 #_(reset-server!)
+
