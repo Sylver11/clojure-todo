@@ -110,16 +110,3 @@
 
 
 (run)
-
-;;(js/alert "Hello world!")
-
-
-
-;; (set! (.-innerHTML "testing") "Hi!")
-
-;; (set! (#-innerHTML "testing") "Hi! not with the dot")
-
-;; (-> js/document
-;;     (.getElementById "testing")
-;;     (.-innerHTML)
-;;     (set! "Hello Clojure!"))

@@ -21,7 +21,8 @@
           (include-js "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js")
          ;; (include-js "js/ui-bootstrap-tpls-0.7.0.min.js")
           (include-js "js/script.js")
-          ]
+         ; (include-js "js/main.js")
+]
 
           [:body
 

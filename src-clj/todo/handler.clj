@@ -12,7 +12,8 @@
             [todo.views.registration :as registration]
             [todo.views.index :as index]
             [todo.views.todo-js :as todo-js]
-            [todo.views.login :as login])
+            [todo.views.login :as login]
+            [todo.views.todo-script :as todo-script])
   )
 
 
@@ -54,6 +55,11 @@
     (str req))
   (GET "/todo-js" req
     (layout/application "My Clojure Script TOOD" (todo-js/js-page) req))
+
+  (GET "/testing" req
+    (layout/application "My Clojure Script TOOD" (todo-script/testing) req))
+
+
   ;; (GET "/testing" []
   ;;   (todo.views.testing/hello))
 
@@ -87,4 +93,3 @@
   (start-server!))
 
 #_(reset-server!)
-

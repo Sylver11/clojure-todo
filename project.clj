@@ -22,8 +22,28 @@
               :compiler {:output-to "resources/public/js/main.js"
                          :output-dir "resources/public/js/out"
                          :optimizations :whitespace
-                         :pretty-print true}}]}
+                         :pretty-print true}}
+             ]}
+
+
+  :figwheel
+  {:http-server-root "public"
+   :server-port 4000
+   :nrepl-port 7002
+   :nrepl-middleware [cider.piggieback/wrap-cljs-repl
+                      ]
+   :css-dirs ["resources/public/css"]
+   :ring-handler todo.handler/-main}
+
+
 ;  :uberjar-name "todo.jar"
   :main todo.handler
   :aot [todo.handler]
   )
+
+
+;; :profiles
+;; {:cljs
+;;    {:source-paths ["src-cljs"]
+;;     :dependencies [[thheller/shadow-cljs "2.8.91"]
+;;                    [reagent "0.9.1"]]}}
